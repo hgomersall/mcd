@@ -7,6 +7,7 @@
 # See `License` for details of license and warranty.
 
 import os
+import numpy
 from distutils.core import setup
 from distutils.extension import Extension
 from distutils.command.sdist import sdist as _sdist
@@ -20,6 +21,8 @@ with open('README.rst') as readme_file:
 
 # see "A note on setup.py" in README.rst for an explanation of the dev file
 dev_mode = os.path.exists('dev')
+
+include_dirs = [numpy.get_include()]
 
 if dev_mode:
     from Cython.Distutils import build_ext
@@ -36,12 +39,14 @@ if dev_mode:
             _sdist.run(self)
 
     cmdclass = {'build_ext': build_ext, 'sdist': sdist}
-    ext_modules = [ Extension('.'.join(loc), [os.path.join(*loc)+'.pyx'])
-                    for loc in cython_locs ]
+    ext_modules = [Extension('.'.join(loc), 
+        sources=[os.path.join(*loc)+'.pyx'], include_dirs=include_dirs)
+        for loc in cython_locs ]
 else:
     cmdclass = {}
-    ext_modules = [ Extension('.'.join(loc), [os.path.join(*loc)+'.c'])
-                    for loc in cython_locs ]
+    ext_modules = [ Extension('.'.join(loc), 
+        sources=[os.path.join(*loc)+'.c'], include_dirs=include_dirs)
+        for loc in cython_locs ]
 
 setup(
     name='mcd',
