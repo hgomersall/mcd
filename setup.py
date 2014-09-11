@@ -39,13 +39,17 @@ if dev_mode:
             _sdist.run(self)
 
     cmdclass = {'build_ext': build_ext, 'sdist': sdist}
-    ext_modules = [Extension('.'.join(loc), 
-        sources=[os.path.join(*loc)+'.pyx'], include_dirs=include_dirs)
+    ext_modules = [
+        Extension('.'.join(loc), 
+                  sources=[os.path.join(*loc)+'.pyx'], 
+                  include_dirs=include_dirs)
         for loc in cython_locs ]
 else:
     cmdclass = {}
-    ext_modules = [ Extension('.'.join(loc), 
-        sources=[os.path.join(*loc)+'.c'], include_dirs=include_dirs)
+    ext_modules = [
+        Extension('.'.join(loc), 
+                  sources=[os.path.join(*loc)+'.c'],
+                  include_dirs=include_dirs)
         for loc in cython_locs ]
 
 setup(
